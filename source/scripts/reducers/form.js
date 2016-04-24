@@ -16,17 +16,12 @@ import {createReducers} from 'scripts/helpers';
 // Do ***not*** provide `defaultState` because the web app's forms are administered by Redux Form.
 
 export default createReducers({
-  ConferenceEditor: {
-    clearConferenceEditor: (state, action) => ({
+  SharerEditor: {
+    clearSharerEditor: (state, action) => ({
       ...state,
-      name: {},
-      organizer: {},
-      _startDate: {},
-      _startTime: {},
-      _endDate: {},
-      _endTime: {},
-      _parentEventId: {},
-      content: {}
+      word1: {},
+      word2: {},
+      word3: {}
     })
   }
 });

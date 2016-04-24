@@ -55,7 +55,7 @@ function configureStore (initialState) {
     combineReducers(
       defaultState::reduceToObject((_, stateName) => combineReducers(reducers[stateName]), {
         form: formReducer.plugin({
-          ConferenceEditor: reducers.form.ConferenceEditor
+          SharerEditor: reducers.form.SharerEditor
         })
       })
     ),

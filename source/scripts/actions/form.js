@@ -15,4 +15,4 @@ import {createActions} from 'scripts/helpers';
 //
 // This module contains the following Redux actions.
 
-export default createActions('clearConferenceEditor');
+export default createActions('clearSharerEditor');
