@@ -1,0 +1,83 @@
+{
+  "name": "cmwebconsole",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jan0054/cmwebconsole.git"
+  },
+  "scripts": {
+    "init": "./commands/init",
+    "update": "./commands/update",
+    "preinstall": "npm cache clean",
+    "precommit": "npm test",
+    "test": "./commands/test",
+    "start": "./commands/start"
+  },
+  "dependencies": {
+    "babel-core": "^5.8.30",
+    "bound-native-methods": "^0.1.6",
+    "isomorphic-fetch": "^2.2.0",
+    "react": "^0.14.0",
+    "react-dom": "^0.14.0",
+    "classnames": "^2.2.0",
+    "redux": "^3.0.4",
+    "redux-actions": "^0.8.0",
+    "redux-promise": "^0.5.0",
+    "react-redux": "^4.0.0",
+    "redux-form": "^5.0.1",
+    "redux-localstorage": "1.0.0-rc4",
+    "redux-localstorage-filter": "^0.1.1",
+    "is": "^3.1.0",
+    "parse": "^1.6.14",
+    "parse-react": "^0.5.0",
+    "moment": "^2.12.0",
+    "immutable": "^3.7.6"
+  },
+  "devDependencies": {
+    "webpack": "^1.12.2",
+    "babel-runtime": "^5.8.29",
+    "babel-loader": "^5.3.2",
+    "express": "^4.13.3",
+    "webpack-dev-middleware": "^1.2.0",
+    "webpack-hot-middleware": "^2.4.1",
+    "babel-plugin-react-transform": "^1.1.1",
+    "react-transform-hmr": "^1.0.1",
+    "react-transform-catch-errors": "^1.0.0",
+    "redbox-react": "^1.1.1",
+    "redux-devtools": "^2.1.5",
+    "redux-logger": "^2.0.4",
+    "husky": "^0.10.1"
+  },
+  "engines": {
+    "node": ">=5.4.0"
+  },
+  "babel": {
+    "stage": 0,
+    "loose": "all",
+    "experimental": true,
+    "optional": [
+      "runtime",
+      "minification.constantFolding"
+    ],
+    "plugins": [
+      "react-transform"
+    ],
+    "extra": {
+      "react-transform": {
+        "transforms": [{
+          "transform": "react-transform-hmr",
+          "imports": ["react"],
+          "locals": ["module"]
+        }, {
+          "transform": "react-transform-catch-errors",
+          "imports": ["react", "redbox-react"]
+        }]
+      }
+    }
+  },
+  "semistandard": {
+    "parser": "babel-eslint"
+  }
+}
