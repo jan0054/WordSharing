@@ -11,6 +11,8 @@
 export default {
   defaultState: {
     editor: {
+      mode: 'share',
+      content: '',
       results: []
     }
   },

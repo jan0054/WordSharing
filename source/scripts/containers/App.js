@@ -24,6 +24,8 @@ import SharerEditor from 'scripts/components/SharerEditor';
 export default @connect(state => state, actions) class App extends React.Component {
   static propTypes = {
     editor: React.PropTypes.object.isRequired,
+    changeMode: React.PropTypes.func.isRequired,
+    share: React.PropTypes.func.isRequired,
     retrieve: React.PropTypes.func.isRequired,
     clearSharerEditor: React.PropTypes.func.isRequired
   }
@@ -31,8 +33,7 @@ export default @connect(state => state, actions) class App extends React.Compone
   render () {
     const {
       editor,
-      retrieve,
-      clearSharerEditor
+      changeMode, share, retrieve, clearSharerEditor
     } = this.props;
 
     return (
@@ -40,7 +41,7 @@ export default @connect(state => state, actions) class App extends React.Compone
         input = {{
           editor
         }}
-        actions = {{retrieve, clearSharerEditor}}
+        actions = {{changeMode, share, retrieve, clearSharerEditor}}
       />
     );
   }

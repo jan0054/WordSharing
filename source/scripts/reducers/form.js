@@ -21,7 +21,8 @@ export default createReducers({
       ...state,
       word1: {},
       word2: {},
-      word3: {}
+      word3: {},
+      content: {}
     })
   }
 });

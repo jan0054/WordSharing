@@ -6,8 +6,16 @@ import {defaultFormValues} from 'scripts/configs';
 
 @connectForm({
   form: 'SharerEditor',
-  fields: ['word1', 'word2', 'word3'],
-  initialValues: defaultFormValues.SharerEditor
+  fields: ['word1', 'word2', 'word3', 'content', 'file'],
+  initialValues: defaultFormValues.SharerEditor,
+  validate: values => {
+    const errors = {};
+
+    values.word1 === '' && (errors.word1 = 'Passphrase A is required.');
+    values.content === '' && (errors.content = 'Note is required.');
+
+    return errors;
+  }
 })
 export default class SharerEditor extends React.Component {
   static propTypes = {
@@ -21,9 +29,11 @@ export default class SharerEditor extends React.Component {
       input: {
         editor
       },
-      actions: {retrieve, clearSharerEditor},
-      fields: {word1, word2, word3}
+      actions: {changeMode, share, retrieve, clearSharerEditor},
+      fields: {word1, word2, word3, content, file}
     } = this.props;
+
+    const modes = ['share', 'retrieve'];
 
     return (
       <form>
@@ -40,12 +50,20 @@ export default class SharerEditor extends React.Component {
         <div className = 'row'>
           <div className = 'columns small-8 small-centered'>
             <ul className = 'tabs'>
-              <li className = 'tabs-title'>
-                <a>Share</a>
+            {modes.map(mode =>
+              <li
+                key = {mode}
+                className = 'tabs-title'
+              >
+                <a
+                  style = {{textTransform: 'capitalize'}}
+                  aria-selected = {mode === editor.mode}
+                  onClick = {() => changeMode(mode)}
+                >
+                  {mode}
+                </a>
               </li>
-              <li className = 'tabs-title'>
-                <a aria-selected = 'true'>Retrieve</a>
-              </li>
+            )}
             </ul>
             <div className = 'tabs-content'>
               <div className = 'tabs-panel is-active'>
@@ -54,54 +72,116 @@ export default class SharerEditor extends React.Component {
                     <input
                       {...word1}
                       type = 'text'
-                      placeholder = 'Passphrase 1'
+                      placeholder = 'Passphrase A (Required)'
                     />
                   </div>
                   <div className = 'columns small-4'>
                     <input
                       {...word2}
                       type = 'text'
-                      placeholder = 'Passphrase 2'
+                      placeholder = 'Passphrase B'
                     />
                   </div>
                   <div className = 'columns small-4'>
                     <input
                       {...word3}
                       type = 'text'
-                      placeholder = 'Passphrase 3'
+                      placeholder = 'Passphrase C'
                     />
                   </div>
                 </div>
+              {editor.mode === 'share' &&
+                <div className = 'row'>
+                  <div className = 'columns'>
+                    <textarea
+                      {...content}
+                      rows = {8}
+                      placeholder = '(Required)'
+                    ></textarea>
+                  </div>
+                  <div className = 'columns'>
+                    <input
+                      {...file}
+                      type = 'file'
+                      value = {null}
+                    />
+                  </div>
+                </div>
+              }
                 <div className = 'row'>
                   <div className = 'columns'>
                     <button
                       className = 'expanded button'
+                      style = {{textTransform: 'capitalize'}}
+                      disabled = {
+                        editor.mode === 'share' && (word1.value === '' || content.value === '') ||
+                        editor.mode === 'retrieve' && word1.value === ''
+                      }
                       onClick = {async event => {
                         event.preventDefault();
 
-                        await retrieve({
-                          fields: {
-                            word1: word1.value,
-                            word2: word2.value,
-                            word3: word3.value
+                        await ({
+                          share () {
+                            share({
+                              file: file.value[0],
+
+                              fields: {
+                                word1: word1.value,
+                                word2: word2.value,
+                                word3: word3.value,
+                                content: content.value,
+                                type: file.value.length
+                              }
+                            });
+                          },
+
+                          retrieve () {
+                            retrieve({
+                              fields: {
+                                word1: word1.value,
+                                word2: word2.value,
+                                word3: word3.value
+                              }
+                            });
                           }
-                        });
+                        }[editor.mode])();
 
                         clearSharerEditor();
                       }}
                     >
-                      Retrieve Note
+                      {editor.mode} Note
                     </button>
                   </div>
                 </div>
-              {editor.results.map(result =>
+              {editor.mode === 'share' &&
+                <div className = 'row'>
+                  <div className = 'columns'>
+                  {word1.touched && word1.error &&
+                    <p className = 'help-text'>
+                      {word1.error}
+                    </p>
+                  }
+                  {content.touched && content.error &&
+                    <p className = 'help-text'>
+                      {content.error}
+                    </p>
+                  }
+                  </div>
+                </div>
+              }
+              {editor.mode === 'retrieve' && editor.results.map(result =>
                 <div
                   key = {result.id}
                   className = 'callout primary'
                 >
-                  <Linkify properties = {{target: '_blank'}}>
-                    {result.get('content')}
-                  </Linkify>
+                  <p>
+                    <Linkify properties = {{target: '_blank'}}>
+                      {result.get('content')}
+                    </Linkify>
+                  </p>
+                {result.get('file') &&
+                  <img src = {result.get('file')._url} />
+                }
                 </div>
               )}
               </div>
