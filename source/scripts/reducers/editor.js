@@ -8,5 +8,13 @@ export default createReducers({
 
   results: {
     retrieve: (state, action) => action.payload
+  },
+
+  status: {
+    share: (state, action) => 'shared',
+
+    retrieve: (state, action) => action.payload.length ? 'retrieved' : 'not found',
+
+    clearStatus: (state, action) => ''
   }
 }, defaultState.editor);

@@ -29,7 +29,7 @@ export default class SharerEditor extends React.Component {
       input: {
         editor
       },
-      actions: {changeMode, share, retrieve, clearSharerEditor},
+      actions: {changeMode, share, retrieve, clearSharerEditor, clearStatus},
       fields: {word1, word2, word3, content, file}
     } = this.props;
 
@@ -120,9 +120,9 @@ export default class SharerEditor extends React.Component {
                       onClick = {async event => {
                         event.preventDefault();
 
-                        await ({
-                          share () {
-                            share({
+                        switch (editor.mode) {
+                          case 'share':
+                            await share({
                               file: file.value[0],
 
                               fields: {
@@ -133,23 +133,26 @@ export default class SharerEditor extends React.Component {
                                 type: file.value.length
                               }
                             });
-                          },
 
-                          retrieve () {
-                            retrieve({
+                            break;
+                          case 'retrieve':
+                            await retrieve({
                               fields: {
                                 word1: word1.value,
                                 word2: word2.value,
                                 word3: word3.value
                               }
                             });
-                          }
-                        }[editor.mode])();
+
+                            break;
+                        }
 
                         clearSharerEditor();
+
+                        setTimeout(() => clearStatus(), 3000);
                       }}
                     >
-                      {editor.mode} Note
+                      {editor.status || `${editor.mode} Note`}
                     </button>
                   </div>
                 </div>

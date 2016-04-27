@@ -12,8 +12,8 @@ export default {
   defaultState: {
     editor: {
       mode: 'share',
-      content: '',
-      results: []
+      results: [],
+      status: ''
     }
   },
 
@@ -21,7 +21,8 @@ export default {
     SharerEditor: {
       word1: '',
       word2: '',
-      word3: ''
+      word3: '',
+      content: ''
     }
   }
 };

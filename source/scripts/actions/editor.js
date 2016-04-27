@@ -4,6 +4,7 @@ import {createActions} from 'scripts/helpers';
 
 export default createActions(
   'changeMode',
+  'clearStatus',
   {
     share: async ({file, fields}) => {
       try {
