@@ -182,8 +182,18 @@ export default class SharerEditor extends React.Component {
                       {result.get('content')}
                     </Linkify>
                   </p>
-                {result.get('file') &&
-                  <img src = {result.get('file')._url} />
+                { !result.get('file')
+                ? ''
+
+                : ['gif', 'jpg', 'png'].includes(result.get('file')._name.split('.').pop())
+                ? <img src = {result.get('file')._url} />
+
+                : <a
+                    target = '_blank'
+                    href = {result.get('file')._url}
+                  >
+                    Download Attached File
+                  </a>
                 }
                 </div>
               )}
