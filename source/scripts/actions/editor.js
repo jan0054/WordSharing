@@ -4,6 +4,7 @@ import {createActions} from 'scripts/helpers';
 
 export default createActions(
   'changeMode',
+  'uploading',
   'clearStatus',
   {
     share: async ({file, fields}) => {

@@ -25,6 +25,7 @@ export default @connect(state => state, actions) class App extends React.Compone
   static propTypes = {
     editor: React.PropTypes.object.isRequired,
     changeMode: React.PropTypes.func.isRequired,
+    uploading: React.PropTypes.func.isRequired,
     share: React.PropTypes.func.isRequired,
     retrieve: React.PropTypes.func.isRequired,
     clearSharerEditor: React.PropTypes.func.isRequired,
@@ -34,7 +35,7 @@ export default @connect(state => state, actions) class App extends React.Compone
   render () {
     const {
       editor,
-      changeMode, share, retrieve, clearSharerEditor, clearStatus
+      changeMode, uploading, share, retrieve, clearSharerEditor, clearStatus
     } = this.props;
 
     return (
@@ -42,7 +43,7 @@ export default @connect(state => state, actions) class App extends React.Compone
         input = {{
           editor
         }}
-        actions = {{changeMode, share, retrieve, clearSharerEditor, clearStatus}}
+        actions = {{changeMode, uploading, share, retrieve, clearSharerEditor, clearStatus}}
       />
     );
   }

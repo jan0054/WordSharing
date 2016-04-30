@@ -1,6 +1,7 @@
 import React from 'react';
 import {reduxForm as connectForm} from 'redux-form';
 import Linkify from 'react-linkify';
+import Moment from 'moment';
 
 import {defaultFormValues} from 'scripts/configs';
 
@@ -11,8 +12,7 @@ import {defaultFormValues} from 'scripts/configs';
   validate: values => {
     const errors = {};
 
-    values.word1 === '' && (errors.word1 = 'Passphrase A is required.');
-    values.content === '' && (errors.content = 'Note is required.');
+    values.word1 === '' && (errors.word1 = 'Phrase 1 is required.');
 
     return errors;
   }
@@ -29,7 +29,7 @@ export default class SharerEditor extends React.Component {
       input: {
         editor
       },
-      actions: {changeMode, share, retrieve, clearSharerEditor, clearStatus},
+      actions: {changeMode, uploading, share, retrieve, clearSharerEditor, clearStatus},
       fields: {word1, word2, word3, content, file}
     } = this.props;
 
@@ -42,25 +42,31 @@ export default class SharerEditor extends React.Component {
             <h1
               className = 'text-center'
               style = {{
-                margin: '60px 0 60px 0'
+                margin: '60px 0 60px 0',
+                color: '#505160'
               }}
-            >Colloquium.me Note Sharer</h1>
+            >Colloquium.me URL & File Sharing</h1>
           </div>
         </div>
         <div className = 'row'>
           <div className = 'columns small-8 small-centered'>
-            <ul className = 'tabs'>
+            <ul
+              className = 'tabs'
+            >
             {modes.map(mode =>
               <li
                 key = {mode}
                 className = 'tabs-title'
               >
                 <a
-                  style = {{textTransform: 'capitalize'}}
+                  style = {{
+                    color: '#495c71',
+                    textTransform: 'capitalize'
+                  }}
                   aria-selected = {mode === editor.mode}
                   onClick = {() => changeMode(mode)}
                 >
-                  {mode}
+                  {mode === 'share' ? 'Send' : 'Receive'}
                 </a>
               </li>
             )}
@@ -72,21 +78,21 @@ export default class SharerEditor extends React.Component {
                     <input
                       {...word1}
                       type = 'text'
-                      placeholder = 'Passphrase A (Required)'
+                      placeholder = 'Search Phrase 1 (Required)'
                     />
                   </div>
                   <div className = 'columns small-4'>
                     <input
                       {...word2}
                       type = 'text'
-                      placeholder = 'Passphrase B'
+                      placeholder = 'Search Phrase 2'
                     />
                   </div>
                   <div className = 'columns small-4'>
                     <input
                       {...word3}
                       type = 'text'
-                      placeholder = 'Passphrase C'
+                      placeholder = 'Search Phrase 3'
                     />
                   </div>
                 </div>
@@ -96,8 +102,11 @@ export default class SharerEditor extends React.Component {
                     <textarea
                       {...content}
                       rows = {8}
-                      placeholder = '(Required)'
+                      placeholder = 'Enter URL here or upload file below'
                     ></textarea>
+                  </div>
+                  <div className = 'columns text-center'>
+                    <p>OR</p>
                   </div>
                   <div className = 'columns'>
                     <input
@@ -112,16 +121,18 @@ export default class SharerEditor extends React.Component {
                   <div className = 'columns'>
                     <button
                       className = 'expanded button'
-                      style = {{textTransform: 'capitalize'}}
-                      disabled = {
-                        editor.mode === 'share' && (word1.value === '' || content.value === '') ||
-                        editor.mode === 'retrieve' && word1.value === ''
-                      }
+                      style = {{
+                        background: '#882426',
+                        textTransform: 'capitalize'
+                      }}
+                      disabled = {word1.value === ''}
                       onClick = {async event => {
                         event.preventDefault();
 
                         switch (editor.mode) {
                           case 'share':
+                            uploading();
+
                             await share({
                               file: file.value[0],
 
@@ -133,6 +144,8 @@ export default class SharerEditor extends React.Component {
                                 type: file.value.length
                               }
                             });
+
+                            file.value.length && window.alert('File has been uploaded!');
 
                             break;
                           case 'retrieve':
@@ -152,7 +165,7 @@ export default class SharerEditor extends React.Component {
                         setTimeout(() => clearStatus(), 3000);
                       }}
                     >
-                      {editor.status || `${editor.mode} Note`}
+                      {editor.status || (editor.mode === 'share' ? 'Upload' : 'Search')}
                     </button>
                   </div>
                 </div>
@@ -164,11 +177,6 @@ export default class SharerEditor extends React.Component {
                       {word1.error}
                     </p>
                   }
-                  {content.touched && content.error &&
-                    <p className = 'help-text'>
-                      {content.error}
-                    </p>
-                  }
                   </div>
                 </div>
               }
@@ -176,8 +184,17 @@ export default class SharerEditor extends React.Component {
                 <div
                   key = {result.id}
                   className = 'callout primary'
+                  style = {{
+                    background: '#e0e0e0'
+                  }}
                 >
-                  <p>
+                  <ul className = 'breadcrumbs'>
+                    <li>{Moment(result.get('createdAt')).format('YYYY-MM-DD')}</li>
+                    <li>{result.get('type') ? 'File' : 'URL'}</li>
+                  </ul>
+                  <p
+                    style = {{color: '#505160'}}
+                  >
                     <Linkify properties = {{target: '_blank'}}>
                       {result.get('content')}
                     </Linkify>

@@ -11,6 +11,8 @@ export default createReducers({
   },
 
   status: {
+    uploading: (state, action) => 'uploading...',
+
     share: (state, action) => 'shared',
 
     retrieve: (state, action) => action.payload.length ? 'retrieved' : 'not found',
