@@ -9,6 +9,12 @@ export default createActions(
   {
     share: async ({file, fields}) => {
       try {
+        setTimeout(() => {
+          window.alert('Failure! File may exceeded size limit (10 MB)');
+
+          throw new Error('timeout');
+        }, 120000);
+
         return await new (Parse.Object.extend('Shared'))().save({
           ...fields,
 

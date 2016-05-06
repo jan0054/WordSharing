@@ -114,6 +114,7 @@ export default class SharerEditor extends React.Component {
                       type = 'file'
                       value = {null}
                     />
+                    <p>File Size Limit: 10 MB</p>
                   </div>
                 </div>
               }
